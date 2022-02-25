@@ -26,7 +26,7 @@ static const char *colors[][3]      = {
 	[SchemeNorm] = { col_gray3, col_gray1, col_gray2 },
 	[SchemeSel]  = { col_gray4, col_gray1, col_cyan  },
 };
-
+/* autostart */
 static const char *const autostart[] = {
 	"sh", "-c", "$HOME/.config/dwm/startup.sh", NULL,
 	NULL /* terminate */
@@ -34,7 +34,7 @@ static const char *const autostart[] = {
 
 /* tagging */
 static const char *tags[] = { "1", "2", "3", "4", "5", "6", "7", "8", "9" };
-
+/* rules */
 static const Rule rules[] = {
 	/* xprop(1):
 	 *	WM_CLASS(STRING) = instance, class
@@ -62,6 +62,10 @@ static const Layout layouts[] = {
 #define MODKEY Mod4Mask
 #define ALT Mod1Mask
 #define PRTSCR	    0x0000ff61
+#define F1 67
+#define F2 68
+#define F3 69
+/* Tag Keys */
 #define TAGKEYS(KEY,TAG) \
 	{ MODKEY,                       KEY,      view,           {.ui = 1 << TAG} }, \
 	{ MODKEY|ControlMask,           KEY,      toggleview,     {.ui = 1 << TAG} }, \
@@ -79,12 +83,20 @@ static const char *dmenucmd[] = { "dmenu_run", "-m", dmenumon, "-fn", dmenufont,
 static const char *termcmd[]  = { "alacritty", NULL };
 static const char *browser[] = { "firefox", NULL };
 static const char *flameshot[] = { "flameshot", "gui", NULL };
+static const char *upvol[]   = { "/usr/bin/pactl", "set-sink-volume", "@DEFAULT_SINK@", "+5%",     NULL };
+static const char *downvol[] = { "/usr/bin/pactl", "set-sink-volume", "@DEFAULT_SINK@", "-5%",     NULL };
+static const char *mutevol[] = { "/usr/bin/pactl", "set-sink-mute",   "@DEFUALT_SINK@", "toggle",  NULL };
+
+/* keys */
 static Key keys[] = {
 	/* modifier                     key        function        argument */
+	{ ControlMask,                  F1,        spawn,          {.v = upvol}},
+	{ ControlMask,                  F2,        spawn,          {.v = downvol}},
+	{ ControlMask,                  F3,        spawn,          {.v = mutevol}},
 	{ 0,     			PRTSCR,    spawn,          {.v = flameshot}},
 	{ ALT,                          XK_b,      spawn,          {.v = browser } },
 	{ MODKEY|ShiftMask,             XK_Return, spawn,          {.v = dmenucmd } },
-	{ MODKEY,                       XK_Return, spawn,          {.v = termcmd } },
+	{ MODKEY,                       XK_Return, spawn,          {.v = termcmd } },	
 	{ MODKEY,                       XK_b,      togglebar,      {0} },
 	{ MODKEY,                       XK_j,      focusstack,     {.i = +1 } },
 	{ MODKEY,                       XK_k,      focusstack,     {.i = -1 } },
@@ -109,26 +121,6 @@ static Key keys[] = {
 	{ MODKEY,                       XK_period, focusmon,       {.i = +1 } },
 	{ MODKEY|ShiftMask,             XK_comma,  tagmon,         {.i = -1 } },
 	{ MODKEY|ShiftMask,             XK_period, tagmon,         {.i = +1 } },
-	{ MODKEY,                       XK_Down,   moveresize,     {.v = "0x 25y 0w 0h" } },
-	{ MODKEY,                       XK_Up,     moveresize,     {.v = "0x -25y 0w 0h" } },
-	{ MODKEY,                       XK_Right,  moveresize,     {.v = "25x 0y 0w 0h" } },
-	{ MODKEY,                       XK_Left,   moveresize,     {.v = "-25x 0y 0w 0h" } },
-	{ MODKEY|ShiftMask,             XK_Down,   moveresize,     {.v = "0x 0y 0w 25h" } },
-	{ MODKEY|ShiftMask,             XK_Up,     moveresize,     {.v = "0x 0y 0w -25h" } },
-	{ MODKEY|ShiftMask,             XK_Right,  moveresize,     {.v = "0x 0y 25w 0h" } },
-	{ MODKEY|ShiftMask,             XK_Left,   moveresize,     {.v = "0x 0y -25w 0h" } },
-	{ MODKEY|ControlMask,           XK_Up,     moveresizeedge, {.v = "t"} },
-	{ MODKEY|ControlMask,           XK_Down,   moveresizeedge, {.v = "b"} },
-	{ MODKEY|ControlMask,           XK_Left,   moveresizeedge, {.v = "l"} },
-	{ MODKEY|ControlMask,           XK_Right,  moveresizeedge, {.v = "r"} },
-	{ MODKEY|ControlMask|ShiftMask, XK_Up,     moveresizeedge, {.v = "T"} },
-	{ MODKEY|ControlMask|ShiftMask, XK_Down,   moveresizeedge, {.v = "B"} },
-	{ MODKEY|ControlMask|ShiftMask, XK_Left,   moveresizeedge, {.v = "L"} },
-	{ MODKEY|ControlMask|ShiftMask, XK_Right,  moveresizeedge, {.v = "R"} },
-	{ MODKEY,                       XK_minus,  setgaps,        {.i = -5 } },
-        { MODKEY,                       XK_equal,  setgaps,        {.i = +5 } },
-        { MODKEY|ShiftMask,             XK_minus,  setgaps,        {.i = GAP_RESET } },
-        { MODKEY|ShiftMask,             XK_equal,  setgaps,        {.i = GAP_TOGGLE} },
 	TAGKEYS(                        XK_1,                      0)
 	TAGKEYS(                        XK_2,                      1)
 	TAGKEYS(                        XK_3,                      2)

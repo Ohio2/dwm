@@ -90,9 +90,9 @@ static const char *mutevol[] = { "/usr/bin/pactl", "set-sink-mute",   "@DEFUALT_
 /* keys */
 static Key keys[] = {
 	/* modifier                     key        function        argument */
-	{ ControlMask,                  F1,        spawn,          {.v = upvol}},
-	{ ControlMask,                  F2,        spawn,          {.v = downvol}},
-	{ ControlMask,                  F3,        spawn,          {.v = mutevol}},
+	{ ControlMask,                  XK_F1,     spawn,          {.v = upvol}},
+	{ ControlMask,                  XK_F2,     spawn,          {.v = downvol}},
+	{ ControlMask,                  XK_F3,     spawn,          {.v = mutevol}},
 	{ 0,     			PRTSCR,    spawn,          {.v = flameshot}},
 	{ ALT,                          XK_b,      spawn,          {.v = browser } },
 	{ MODKEY|ShiftMask,             XK_Return, spawn,          {.v = dmenucmd } },

@@ -1,0 +1,8 @@
+xsetroot_gentext(){
+	echo "vol: $(pamixer --get-volume-human) | $(date +'%H:%M')"
+}
+xsetroot_gen(){
+	while true; do
+		xsetroot -name "$(xsetroot_gentext)"
+	done
+}

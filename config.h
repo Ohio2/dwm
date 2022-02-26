@@ -20,11 +20,11 @@ static const char col_gray1[]       = "#222222";
 static const char col_gray2[]       = "#444444";
 static const char col_gray3[]       = "#bbbbbb";
 static const char col_gray4[]       = "#eeeeee";
-static const char col_cyan[]        = "#4d4d4d";
+static const char col_gray5[]       = "#303030";
 static const char *colors[][3]      = {
 	/*               fg         bg         border   */
 	[SchemeNorm] = { col_gray3, col_gray1, col_gray2 },
-	[SchemeSel]  = { col_gray4, col_gray1, col_cyan  },
+	[SchemeSel]  = { col_gray4, col_gray5, col_gray5  },
 };
 /* autostart */
 static const char *const autostart[] = {
@@ -79,20 +79,22 @@ static const Layout layouts[] = {
 
 /* commands */
 static char dmenumon[2] = "0"; /* component of dmenucmd, manipulated in spawn() */
-static const char *dmenucmd[] = { "dmenu_run", "-m", dmenumon, "-fn", dmenufont, "-nb", col_gray1, "-nf", col_gray3, "-sb", col_cyan, "-sf", col_gray4, NULL };
+static const char *dmenucmd[] = { "dmenu_run", "-m", dmenumon, "-fn", dmenufont, "-nb", col_gray1, "-nf", col_gray3, "-sb", col_gray5, "-sf", col_gray4, NULL };
 static const char *termcmd[]  = { "alacritty", NULL };
 static const char *browser[] = { "firefox", NULL };
 static const char *flameshot[] = { "flameshot", "gui", NULL };
 static const char *upvol[]   = { "/usr/bin/pactl", "set-sink-volume", "@DEFAULT_SINK@", "+5%",     NULL };
 static const char *downvol[] = { "/usr/bin/pactl", "set-sink-volume", "@DEFAULT_SINK@", "-5%",     NULL };
-static const char *mutevol[] = { "/usr/bin/pactl", "set-sink-mute",   "@DEFUALT_SINK@", "toggle",  NULL };
+static const char *mutevol[] = { "/usr/bin/pactl", "set-sink-mute",  "@DEFUALT_SINK@", "toggle",  NULL };
+static const char *resetvol[] = { "/usr/bin/pactl", "set-sink-volume", "@DEFUALT_SINK@", "100%",    NULL };
 
 /* keys */
 static Key keys[] = {
 	/* modifier                     key        function        argument */
 	{ ControlMask,                  XK_F1,     spawn,          {.v = upvol}},
 	{ ControlMask,                  XK_F2,     spawn,          {.v = downvol}},
-	{ ControlMask,                  XK_F3,     spawn,          {.v = mutevol}},
+//	{ ControlMask,                  XK_F3,     spawn,          {.v = mutevol}},
+//	{ ControlMask,                  XK_F4,     spawn,          {.v = resetvol}},
 	{ 0,     			PRTSCR,    spawn,          {.v = flameshot}},
 	{ ALT,                          XK_b,      spawn,          {.v = browser } },
 	{ MODKEY|ShiftMask,             XK_Return, spawn,          {.v = dmenucmd } },

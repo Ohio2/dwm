@@ -46,3 +46,21 @@ Configuration
 -------------
 The configuration of dwm is done by creating a custom config.h
 and (re)compiling the source code.
+
+Ohio DWM - what changed?
+-------------
+- You can restart DWM using CTRL+SHIFT+MOD+R, thanks to: https://dwm.suckless.org/patches/restartsig/
+- You can use a fibonacci layout using both the key combinations of R and SHIFT+R, thanks to: https://dwm.suckless.org/patches/fibonacci/
+- You can see what workspace you are on like this: (https://i.imgur.com/QJCN3k4.png), thanks to: https://dwm.suckless.org/patches/activetagindicatorbar/
+- You can send windows to other monitors using ALT+SHIFT+NUMBEROFMONITOR, thanks to: https://dwm.suckless.org/patches/accessnthmonitor/
+- You can see gaps between windows, they are preconfigured to be 10px, Reset MOD+SHIFT+=, Switch MOD+SHIFT+-, Enlargen the gap MOD+=, Decrease the gap in size MOD+-, thanks to: https://dwm.suckless.org/patches/functionalgaps/
+- You can do a fake full screen using SHIFT+F, thanks to: https://dwm.suckless.org/patches/fakefullscreen/
+- Systray is disabled but can be enabled, thanks to: https://dwm.suckless.org/patches/systray/
+- You use Alacritty instead of ST as the DWM terminal
+- The colorscheme is diffrent than DWM's stock one, a little bit darker
+- If you use the default startup.sh script, you can see the time and volume percentage
+- If you use the default startup.sh script, you can swap out the background to any other background (*file format must be supported by FEH, *you have to name the file background.*)
+
+Ohio DWM - why?
+-------------
+No idea

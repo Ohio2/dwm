@@ -46,7 +46,7 @@ static const Rule rules[] = {
 };
 
 /* layout(s) */
-static const float mfact     = 0.55; /* factor of master area size [0.05..0.95] */
+static const float mfact     = 0.50; /* factor of master area size [0.05..0.95] */
 static const int nmaster     = 1;    /* number of clients in master area */
 static const int resizehints = 1;    /* 1 means respect size hints in tiled resizals */
 static const Layout layouts[] = {
@@ -83,18 +83,22 @@ static const char *dmenucmd[] = { "dmenu_run", "-m", dmenumon, "-fn", dmenufont,
 static const char *termcmd[]  = { "alacritty", NULL };
 static const char *browser[] = { "firefox", NULL };
 static const char *flameshot[] = { "flameshot", "gui", NULL };
-static const char *upvol[]   = { "/usr/bin/pactl", "set-sink-volume", "@DEFAULT_SINK@", "+5%",     NULL };
-static const char *downvol[] = { "/usr/bin/pactl", "set-sink-volume", "@DEFAULT_SINK@", "-5%",     NULL };
-static const char *mutevol[] = { "/usr/bin/pactl", "set-sink-mute",  "@DEFUALT_SINK@", "toggle",  NULL };
-static const char *resetvol[] = { "/usr/bin/pactl", "set-sink-volume", "@DEFUALT_SINK@", "100%",    NULL };
+static const char *upvol[]   = { "/usr/bin/pamixer", "-i", "5",  NULL };
+static const char *downvol[] = { "/usr/bin/pamixer", "-d", "5",  NULL };
+static const char *mutevol[] = { "/usr/bin/pamixer", "-t",  NULL };
+static const char *resetvol[] = { "/usr/bin/pamixer", "--set-volume", "100", NULL };
+static const char *xkbmapukr[] = { "/usr/bin/setxkbmap", "ru" };
+static const char *xkbmappol[] = { "/usr/bin/setxkbmap", "pl" };
 
 /* keys */
 static Key keys[] = {
 	/* modifier                     key        function        argument */
 	{ ControlMask,                  XK_F1,     spawn,          {.v = upvol}},
 	{ ControlMask,                  XK_F2,     spawn,          {.v = downvol}},
-//	{ ControlMask,                  XK_F3,     spawn,          {.v = mutevol}},
-//	{ ControlMask,                  XK_F4,     spawn,          {.v = resetvol}},
+	{ ControlMask,                  XK_F3,     spawn,          {.v = mutevol}},
+	{ ControlMask,                  XK_F4,     spawn,          {.v = resetvol}},
+        { ControlMask,                  XK_F5,     spawn,          {.v = xkbmapukr}},
+	{ ControlMask,                  XK_F6,     spawn,          {.v = xkbmappol}},
 	{ 0,     			PRTSCR,    spawn,          {.v = flameshot}},
 	{ ALT,                          XK_b,      spawn,          {.v = browser } },
 	{ MODKEY|ShiftMask,             XK_Return, spawn,          {.v = dmenucmd } },

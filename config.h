@@ -82,8 +82,8 @@ static const char *dmenucmd[] = { "dmenu_run", "-m", dmenumon, "-fn", dmenufont,
 static const char *termcmd[]  = { "alacritty", NULL };
 static const char *browser[] = { "firefox", NULL };
 static const char *flameshot[] = { "flameshot", "gui", NULL };
-static const char *upvol[]   = { "/usr/bin/pamixer", "-i", "5",  NULL };
-static const char *downvol[] = { "/usr/bin/pamixer", "-d", "5",  NULL };
+static const char *upvol[]   = { "/usr/bin/pamixer", "--allow-boost", "-i", "5",  NULL };
+static const char *downvol[] = { "/usr/bin/pamixer", "--allow-boost", "-d", "5",  NULL };
 static const char *mutevol[] = { "/usr/bin/pamixer", "-t",  NULL };
 static const char *resetvol[] = { "/usr/bin/pamixer", "--set-volume", "100", NULL };
 static const char *xkbmapukr[] = { "/usr/bin/setxkbmap", "ru" };
@@ -115,8 +115,8 @@ static Key keys[] = {
 	{ MODKEY,                       XK_t,      setlayout,      {.v = &layouts[0]} },
 	{ MODKEY,                       XK_f,      setlayout,      {.v = &layouts[1]} },
 	{ MODKEY,                       XK_m,      setlayout,      {.v = &layouts[2]} },
-	{ MODKEY,                       XK_r,      setlayout,      {.v = &layouts[3]} },
-	{ MODKEY|ShiftMask,             XK_r,      setlayout,      {.v = &layouts[4]} },
+	{ MODKEY,                       XK_y,      setlayout,      {.v = &layouts[3]} },
+	{ MODKEY|ShiftMask,             XK_y,      setlayout,      {.v = &layouts[4]} },
 	{ MODKEY,                       XK_space,  setlayout,      {0} },
 	{ MODKEY|ShiftMask,             XK_space,  togglefloating, {0} },
 	{ MODKEY|ShiftMask,             XK_f,      togglefullscr,  {0} },

@@ -1,8 +1,14 @@
+#xsetroot_gcolor(){
+#
+#}
 xsetroot_gentext(){
-	echo "vol: $(pamixer --get-volume-human) | $(date +'%H:%M')"
+	echo " [vol: $(pamixer --get-volume-human)] | [$(date +'%d/%m/%Y, %a')] | [$(date +'%H:%M')] "
 }
 xsetroot_gen(){
-	while true; do
+	while ps -C dwm >/dev/null; do
 		xsetroot -name "$(xsetroot_gentext)"
 	done
+}
+xsetroot_die(){
+	pkill xsetroot
 }

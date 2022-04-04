@@ -21,7 +21,6 @@
  * To understand everything else, start reading main().
  */
 #include <errno.h>
-#include <fcntl.h>
 #include <locale.h>
 #include <signal.h>
 #include <stdarg.h>
@@ -29,7 +28,6 @@
 #include <stdlib.h>
 #include <string.h>
 #include <unistd.h>
-#include <sys/select.h>
 #include <sys/types.h>
 #include <sys/wait.h>
 #include <X11/cursorfont.h>
@@ -149,12 +147,6 @@ typedef struct {
 	int isfloating;
 	int monitor;
 } Rule;
-
-typedef struct {
-	const char *name;
-	void (*func)(const Arg *arg);
-	const Arg arg;
-} Command;
 
 /* function declarations */
 static void applyrules(Client *c);
@@ -544,7 +536,6 @@ cleanup(void)
 	XSync(dpy, False);
 	XSetInputFocus(dpy, PointerRoot, RevertToPointerRoot, CurrentTime);
 	XDeleteProperty(dpy, root, netatom[NetActiveWindow]);
-	close(fifofd);
 }
 
 void
@@ -869,26 +860,6 @@ drawstatusbar(Monitor *m, int bh, char* stext) {
 }
 
 void
-dispatchcmd(void)
-{
-	int i;
-	char buf[BUFSIZ];
-	ssize_t n;
-
-	n = read(fifofd, buf, sizeof(buf) - 1);
-	if (n == -1)
-		die("Failed to read() from DWM fifo %s:", dwmfifo);
-	buf[n] = '\0';
-	buf[strcspn(buf, "\n")] = '\0';
-	for (i = 0; i < LENGTH(commands); i++) {
-		if (strcmp(commands[i].name, buf) == 0) {
-			commands[i].func(&commands[i].arg);
-			break;
-		}
-	}
-}
-
-void
 drawbar(Monitor *m)
 {
 	int x, w, sw = 0;
@@ -963,12 +934,6 @@ enternotify(XEvent *e)
 	} else if (!c || c == selmon->sel)
 		return;
 	focus(c);
-}
-
-Bool
-evpredicate()
-{
-	return True;
 }
 
 void
@@ -1618,30 +1583,11 @@ void
 run(void)
 {
 	XEvent ev;
-	fd_set rfds;
-	int n;
-	int dpyfd, maxfd;
 	/* main event loop */
 	XSync(dpy, False);
-	dpyfd = ConnectionNumber(dpy);
-	maxfd = fifofd;
-	if (dpyfd > maxfd)
-		maxfd = dpyfd;
-	maxfd++;
-	while (running) {
-		FD_ZERO(&rfds);
-		FD_SET(fifofd, &rfds);
-		FD_SET(dpyfd, &rfds);
-		n = select(maxfd, &rfds, NULL, NULL, NULL);
-		if (n > 0) {
-			if (FD_ISSET(fifofd, &rfds))
-				dispatchcmd();
-			if (FD_ISSET(dpyfd, &rfds))
-				while (XCheckIfEvent(dpy, &ev, evpredicate, NULL))
-					if (handler[ev.type])
-						handler[ev.type](&ev); /* call handler */
-		}
-	}
+	while (running && !XNextEvent(dpy, &ev))
+		if (handler[ev.type])
+			handler[ev.type](&ev); /* call handler */
 }
 
 void
@@ -1882,9 +1828,6 @@ setup(void)
 	XSelectInput(dpy, root, wa.event_mask);
 	grabkeys();
 	focus(NULL);
-	fifofd = open(dwmfifo, O_RDWR | O_NONBLOCK);
-	if (fifofd < 0)
-		die("Failed to open() DWM fifo %s:", dwmfifo);
 }
 
 

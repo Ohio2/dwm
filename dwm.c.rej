@@ -1,22 +1,83 @@
---- dwm.c
-+++ dwm.c
-@@ -170,9 +179,11 @@ static void destroynotify(XEvent *e);
- static void detach(Client *c);
- static void detachstack(Client *c);
- static Monitor *dirtomon(int dir);
-+static void dispatchcmd(void);
- static void drawbar(Monitor *m);
- static void drawbars(void);
- static void enternotify(XEvent *e);
-+static Bool evpredicate();
- static void expose(XEvent *e);
- static void focus(Client *c);
- static void focusin(XEvent *e);
-@@ -274,6 +285,7 @@ static Display *dpy;
- static Drw *drw;
- static Monitor *mons, *selmon;
- static Window root;
-+static int fifofd;
+--- dwm.c	2019-02-02 18:25:28.000000000 +0530
++++ dwm.c	2021-08-03 19:15:58.734660076 +0530
+@@ -57,10 +58,16 @@
+ #define HEIGHT(X)               ((X)->h + 2 * (X)->bw)
+ #define TAGMASK                 ((1 << LENGTH(tags)) - 1)
+ #define TEXTW(X)                (drw_fontset_getwidth(drw, (X)) + lrpad)
++#define TTEXTW(X)               (drw_fontset_getwidth(drw, (X)))
++
++#define STATUSLENGTH            256
++#define DWMBLOCKSLOCKFILE       "/var/local/dwmblocks/dwmblocks.pid"
++#define DELIMITERENDCHAR        10
++#define LSPAD                   (lrpad / 2) /* padding on left side of status text */
++#define RSPAD                   (lrpad / 2) /* padding on right side of status text */
  
- /* configuration, allows nested code to access above variables */
- #include "config.h"
+ /* enums */
+-enum { CurNormal, CurResize, CurMove, CurLast }; /* cursor */
+-enum { SchemeNorm, SchemeSel }; /* color schemes */
++enum { CurNormal, CurHand, CurResize, CurMove, CurLast }; /* cursor */
+ enum { NetSupported, NetWMName, NetWMState, NetWMCheck,
+        NetWMFullscreen, NetActiveWindow, NetWMWindowType,
+        NetWMWindowTypeDialog, NetClientList, NetLast }; /* EWMH atoms */
+@@ -207,6 +215,7 @@
+ static void seturgent(Client *c, int urg);
+ static void showhide(Client *c);
+ static void sigchld(int unused);
++static void sigdwmblocks(const Arg *arg);
+ static void spawn(const Arg *arg);
+ static void tag(const Arg *arg);
+ static void tagmon(const Arg *arg);
+@@ -239,12 +249,15 @@
+ 
+ /* variables */
+ static const char broken[] = "broken";
+-static char stext[256];
++static char stextc[STATUSLENGTH];
++static char stexts[STATUSLENGTH];
+ static int screen;
+ static int sw, sh;           /* X display screen geometry width, height */
+-static int bh, blw = 0;      /* bar geometry */
++static int bh, blw, ble;     /* bar geometry */
++static int wstext;           /* width of status text */
+ static int lrpad;            /* sum of left and right padding for text */
+ static int (*xerrorxlib)(Display *, XErrorEvent *);
++static unsigned int dwmblockssig;
+ static unsigned int numlockmask = 0;
+ static void (*handler[LASTEvent]) (XEvent *) = {
+ 	[ButtonPress] = buttonpress,
+@@ -710,9 +727,32 @@
+ 
+ 	/* draw status first so it can be overdrawn by tags later */
+ 	if (m == selmon) { /* status is only drawn on selected monitor */
+-		drw_setscheme(drw, scheme[SchemeNorm]);
+-		sw = TEXTW(stext) - lrpad + 2; /* 2px right padding */
+-		drw_text(drw, m->ww - sw, 0, sw, bh, 0, stext, 0);
++                char *stc = stextc;
++                char *stp = stextc;
++                char tmp;
++
++                drw_setscheme(drw, scheme[SchemeNorm]);
++                x = m->ww - wstext;
++                drw_rect(drw, x, 0, LSPAD, bh, 1, 1); x += LSPAD; /* to keep left padding clean */
++                for (;;) {
++                        if ((unsigned char)*stc >= ' ') {
++                                stc++;
++                                continue;
++                        }
++                        tmp = *stc;
++                        if (stp != stc) {
++                                *stc = '\0';
++                                x = drw_text(drw, x, 0, TTEXTW(stp), bh, 0, stp, 0);
++                        }
++                        if (tmp == '\0')
++                                break;
++                        if (tmp - DELIMITERENDCHAR - 1 < LENGTH(colors))
++                                drw_setscheme(drw, scheme[tmp - DELIMITERENDCHAR - 1]);
++                        *stc = tmp;
++                        stp = ++stc;
++                }
++                drw_setscheme(drw, scheme[SchemeNorm]);
++                drw_rect(drw, x, 0, m->ww - x, bh, 1, 1); /* to keep right padding clean */
+ 	}
+ 
+ 	for (c = m->clients; c; c = c->next) {

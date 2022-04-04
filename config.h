@@ -88,6 +88,7 @@ static const char *mutevol[] = { "/usr/bin/pamixer", "-t",  NULL };
 static const char *resetvol[] = { "/usr/bin/pamixer", "--set-volume", "100", NULL };
 static const char *xkbmapukr[] = { "/usr/bin/setxkbmap", "ru" };
 static const char *xkbmappol[] = { "/usr/bin/setxkbmap", "pl" };
+static const char *poweroff[] = { "/usr/bin/sudo", "poweroff" };
 
 /* keys */
 static Key keys[] = {
@@ -130,6 +131,7 @@ static Key keys[] = {
 	{ MODKEY,                       XK_equal,  setgaps,        {.i = +5 } },
 	{ MODKEY|ShiftMask,             XK_minus,  setgaps,        {.i = GAP_RESET } },
 	{ MODKEY|ShiftMask,             XK_equal,  setgaps,        {.i = GAP_TOGGLE} },
+	{ ControlMask|ALT,              XK_Delete, spawn,          {.v = poweroff}},
 	TAGKEYS(                        XK_1,                      0)
 	TAGKEYS(                        XK_2,                      1)
 	TAGKEYS(                        XK_3,                      2)

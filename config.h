@@ -1,5 +1,5 @@
 #include "movestack.c"
-#include "fibonacci.c"
+//#include "fibonacci.c"
 /* See LICENSE file for copyright and license details. */
 
 /* appearance */
@@ -54,8 +54,8 @@ static const Layout layouts[] = {
 	{ "[]=",      tile },    /* first entry is default */
 	{ "><>",      NULL },    /* no layout function means floating behavior */
 	{ "[M]",      monocle },
-	{ "[@]",      spiral },
-	{ "[\\]",      dwindle },
+	//{ "[@]",      spiral },
+	//{ "[\\]",      dwindle },
 };
 
 /* key definitions */
@@ -143,8 +143,7 @@ static Key keys[] = {
 	TAGKEYS(                        XK_7,                      6)
 	TAGKEYS(                        XK_8,                      7)
 	TAGKEYS(                        XK_9,                      8)
-	{ MODKEY|ShiftMask,             XK_q,      quit,           {0} },
-	{ MODKEY|ControlMask|ShiftMask, XK_r,      quit,           {1} },
+	{ MODKEY|ShiftMask,             XK_q,      quit,           {0} },	
 };
 
 /* button definitions */

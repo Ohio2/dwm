@@ -57,10 +57,7 @@ static const Layout layouts[] = {
 	//{ "[@]",      spiral },
 	//{ "[\\]",      dwindle },
 };
-/*commands*/
-static char dmenumon[2] = "0"; /* component of dmenucmd, manipulated in spawn() */
-static const char *dmenucmd[] = { "dmenu_run", "-m", dmenumon, "-fn", dmenufont, "-nb", col_gray1, "-nf", col_gray3, "-sb", col_gray5, "-sf", col_gray4, NULL };
-static const char *termcmd[]  = { "alacritty", NULL };
+
 /* key definitions */
 #define MODKEY Mod4Mask
 #define ALT Mod1Mask
@@ -77,11 +74,27 @@ static const char *termcmd[]  = { "alacritty", NULL };
 /* helper for spawning shell commands in the pre dwm-5.0 fashion */
 #define SHCMD(cmd) { .v = (const char*[]){ "/bin/sh", "-c", cmd, NULL } }
 
+/* commands */
+static char dmenumon[2] = "0"; /* component of dmenucmd, manipulated in spawn() */
+static const char *dmenucmd[] = { "dmenu_run", "-m", dmenumon, "-fn", dmenufont, "-nb", col_gray1, "-nf", col_gray3, "-sb", col_gray5, "-sf", col_gray4, NULL };
+static const char *termcmd[]  = { "alacritty", NULL };
+static const char *browser[] = { "firefox", NULL };
+//static const char *flameshot[] = { "flameshot", "gui", NULL };
+static const char *upvol[]   = { "/usr/bin/pamixer", "--sink", "alsa_output.pci-0000_01_00.1.hdmi-stereo-extra1", "--allow-boost","-i", "5",  NULL };
+static const char *downvol[] = { "/usr/bin/pamixer", "--sink", "alsa_output.pci-0000_01_00.1.hdmi-stereo-extra1", "--allow-boost", "-d", "5",  NULL };
+static const char *mutevol[] = { "/usr/bin/pamixer", "--sink", "alsa_output.pci-0000_01_00.1.hdmi-stereo-extra1", "-t",  NULL };
+static const char *resetvol[] = { "/usr/bin/pamixer", "--sink", " alsa_output.pci-0000_01_00.1.hdmi-stereo-extra1", "--set-volume", "100", NULL };
+static const char *xkbmapukr[] = { "/usr/bin/setxkbmap", "ru" };
+static const char *xkbmappol[] = { "/usr/bin/setxkbmap", "pl" };
+static const char *poweroff[] = { "/usr/bin/sudo", "poweroff" };
+static const char *screenshotsel[] = {"sh", "-c", "$HOME/.config/dwm/prtscr.sh", "sel", NULL};
+static const char *screenshotfull[] = {"sh", "-c", "$HOME/.config/dwm/prtscr.sh", "full", NULL};
+
 /* keys */
-/* might be disabled soon since dwmc is implemented (an alternative to dwmfifo that is itself a fork of dwmfifo)! */
+/* might be disabled soon since dwmc is implemented (an alternative to dwmfifo)! */
 static Key keys[] = {
 	/* modifier                     key        function        argument */
-	/*{ ControlMask,                  XK_F1,     spawn,          {.v = upvol}},
+	{ ControlMask,                  XK_F1,     spawn,          {.v = upvol}},
 	{ ControlMask,                  XK_F2,     spawn,          {.v = downvol}},
 	{ ControlMask,                  XK_F3,     spawn,          {.v = mutevol}},
 	{ ControlMask,                  XK_F4,     spawn,          {.v = resetvol}},
@@ -91,7 +104,7 @@ static Key keys[] = {
 	{ ShiftMask,			PRTSCR,    spawn,          SHCMD("$HOME/.config/dwm/prtscr.sh full")},
 	{ ALT,                          XK_b,      spawn,          {.v = browser } },
 	{ MODKEY|ShiftMask,             XK_Return, spawn,          {.v = dmenucmd } },
-	{ MODKEY,                       XK_Return, spawn,          {.v = termcmd } },
+	{ MODKEY,                       XK_Return, spawn,          {.v = termcmd } },	
 	{ MODKEY,                       XK_b,      togglebar,      {0} },
 	{ MODKEY,                       XK_j,      focusstack,     {.i = +1 } },
 	{ MODKEY,                       XK_k,      focusstack,     {.i = -1 } },
@@ -105,12 +118,11 @@ static Key keys[] = {
 	{ MODKEY,                       XK_t,      setlayout,      {.v = &layouts[0]} },
 	{ MODKEY,                       XK_f,      setlayout,      {.v = &layouts[1]} },
 	{ MODKEY,                       XK_m,      setlayout,      {.v = &layouts[2]} },
-
-	//{ MODKEY,                       XK_y,      setlayout,      {.v = &layouts[3]} },
-	//{ MODKEY|ShiftMask,             XK_y,      setlayout,      {.v = &layouts[4]} },
-	//{ MODKEY,                       XK_space,  setlayout,      {0} },1
-	//{ MODKEY|ShiftMask,             XK_space,  togglefloating, {0} },
-	*/{ MODKEY|ShiftMask,             XK_f,      togglefullscr,  {0} }, /*
+	{ MODKEY,                       XK_y,      setlayout,      {.v = &layouts[3]} },
+	{ MODKEY|ShiftMask,             XK_y,      setlayout,      {.v = &layouts[4]} },
+	{ MODKEY,                       XK_space,  setlayout,      {0} },
+	{ MODKEY|ShiftMask,             XK_space,  togglefloating, {0} },
+	{ MODKEY|ShiftMask,             XK_f,      togglefullscr,  {0} },
 	{ MODKEY,                       XK_0,      view,           {.ui = ~0 } },
 	{ MODKEY|ShiftMask,             XK_0,      tag,            {.ui = ~0 } },
 	{ MODKEY,                       XK_comma,  focusmon,       {.i = -1 } },
@@ -120,9 +132,8 @@ static Key keys[] = {
 	{ MODKEY,                       XK_minus,  setgaps,        {.i = -5 } },
 	{ MODKEY,                       XK_equal,  setgaps,        {.i = +5 } },
 	{ MODKEY|ShiftMask,             XK_minus,  setgaps,        {.i = GAP_RESET } },
-	{ MODKEY|ShiftMask,             XK_equal,  setgaps,        {.i = GAP_TOGGLE} },	
+	{ MODKEY|ShiftMask,             XK_equal,  setgaps,        {.i = GAP_TOGGLE} },
 	{ ControlMask|ALT,              XK_Escape, spawn,          {.v = poweroff}},
-
 	TAGKEYS(                        XK_1,                      0)
 	TAGKEYS(                        XK_2,                      1)
 	TAGKEYS(                        XK_3,                      2)
@@ -132,8 +143,7 @@ static Key keys[] = {
 	TAGKEYS(                        XK_7,                      6)
 	TAGKEYS(                        XK_8,                      7)
 	TAGKEYS(                        XK_9,                      8)
-	*/
-	//{ MODKEY|ShiftMask,             XK_q,      quit,           {0} },	
+	{ MODKEY|ShiftMask,             XK_q,      quit,           {0} },	
 };
 
 /* button definitions */
@@ -204,7 +214,6 @@ static Signal signals[] = {
         { "togglebar",      togglebar },
         { "incnmaster",     incnmaster },
         { "togglefloating", togglefloating },
-	//{ "togglefullscr", togglefullscr },
         { "focusmon",       focusmon },
         { "tagmon",         tagmon },
         { "zoom",           zoom },

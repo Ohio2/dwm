@@ -3,13 +3,17 @@
 signal() {
 	xsetroot -name "fsignal:$*"
 }
+recompile(){
+  make -C $1
+  sudo make install -C $1
+}
 
 case $# in
 1)
 	case $1 in
-	setlayout | view | viewall | togglebar | togglefloating | zoom | killclient | quit)
-		signal $1
-		;;
+    		setlayout | view | viewall | togglebar | togglefloating | togglefullscr | zoom | killclient | quit) 
+			signal $1
+			;;	
 	*)
 		echo "Unknown command or missing one argument."
 		exit 1
@@ -21,12 +25,15 @@ case $# in
 	view | tag)
 		signal $1 ui $2
 		;;
-	viewex | toggleviewex | tagex | toggletagex | setlayoutex | focusstack | incnmaster | focusmon | tagmon | setgaps | focusnthmon | tagnthmon)
+	viewex | toggleviewex | tagex | toggletagex | setlayoutex | focusstack | incnmaster | focusmon | tagmon | setgaps | focusnthmon | tagnthmon | quit)
 		signal $1 i $2
 		;;
 	setmfact)
 		signal $1 f $2
-		;;	
+		;;
+  	recompile)
+		recompile $2 
+    		;;
 	*)
 		echo "Unknown command or one too many arguments."
 		exit 1

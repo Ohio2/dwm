@@ -56,10 +56,9 @@ Ohio DWM - what patches/scripts/files are used?
 - https://dwm.suckless.org/patches/functionalgaps/
 - https://dwm.suckless.org/patches/fakefullscreen/
 - https://dwm.suckless.org/patches/systray/ 
-- /examples/autostart.sh
-- /examples/wallpaper.*
+- /dwmc
 
-Ohio DWM - other changes
+Ohio DWM - changes
 -------------
-- dark theme.
-- vol keybinds
+- SXHKD support (full)
+- Restart and recompiling support

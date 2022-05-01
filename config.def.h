@@ -1,3 +1,4 @@
+#include "selfrestart.c"
 /* See LICENSE file for copyright and license details. */
 
 /* appearance */
@@ -129,6 +130,7 @@ static Key keys[] = {
 	TAGKEYS(                        XK_8,                      7)
 	TAGKEYS(                        XK_9,                      8)
 	{ MODKEY|ShiftMask,             XK_q,      quit,           {0} },
+	{ MODKEY|ControlMask|ShiftMask, XK_q,      quit,           {1} }, 
 };
 
 /* button definitions */
@@ -220,3 +222,4 @@ static Signal signals[] = {
 	{ "setlayout",      setlayout },
 	{ "setlayoutex",    setlayoutex },
 };
+
